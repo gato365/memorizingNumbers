@@ -6,7 +6,8 @@ library(tidyverse)
 
 library(lubridate)
 
-setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life/01_thoughts_self/01_enhancing_self/memorizingNumbers/every_row_has_40/")
+
+setwd("~/Important_Files/Life/01_thoughts_self/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
 
@@ -63,39 +64,81 @@ server <- function(input, output) {
   ##
   ##----------------------------
   output$evaluation <- renderPrint({ 
+    # ## Get My answer
+    # emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    # ## The Solution
+    # reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+    #   str_remove('\\.') %>% 
+    #   str_subset( ".+")
+    # 
+    # numbers_tested = length(reals_solution)
+    # ## Check
+    # paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+
+  
+    number_row = input$which_set
     ## Get My answer
     emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    
+    
+    tmp_df = df %>% 
+      filter(labeled == input$set_combination)
+    
     ## The Solution
-    reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
       str_remove('\\.') %>% 
       str_subset( ".+")
     
     numbers_tested = length(reals_solution)
     ## Check
     paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
-    
   })
   
   ## Answer Box
   output$eval_answer <- renderUI({
     
     
+    # ## Get My answer
+    # emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    # ## The Solution
+    # reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+    #   str_remove('\\.') %>% 
+    #   str_subset( ".+")
+    # 
+    # 
+    # ## User wants to see answer
+    # if(input$answer == 'Answer'){
+    #   HTML(paste(reals_solution,collapse = '')) 
+    # } else if(input$answer == 'Location') {
+    #   HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
+    # } else if(input$answer == 'Nothing'){
+    #   HTML('')
+    # }
+    
+    
+    
+    number_row = input$which_set
+    tmp_df = df %>% 
+      filter(labeled == input$set_combination)
+    
     ## Get My answer
     emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    
+    
     ## The Solution
-    reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
       str_remove('\\.') %>% 
       str_subset( ".+")
     
-    
     ## User wants to see answer
-    if(input$answer == 'Answer'){
+    if(input$answer1 == 'Answer'){
       HTML(paste(reals_solution,collapse = '')) 
-    } else if(input$answer == 'Location') {
+    } else if(input$answer1 == 'Location') {
       HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
-    } else if(input$answer == 'Nothing'){
+    } else if(input$answer1 == 'Nothing'){
       HTML('')
     }
+    
     
   })
  

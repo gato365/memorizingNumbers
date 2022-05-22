@@ -55,14 +55,50 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-  output$distPlot <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  ##----------------------------
+  ##
+  ##
+  ## Evaluating Just 1 Row of 40
+  ##
+  ##
+  ##----------------------------
+  output$evaluation <- renderPrint({ 
+    ## Get My answer
+    emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    ## The Solution
+    reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+      str_remove('\\.') %>% 
+      str_subset( ".+")
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    numbers_tested = length(reals_solution)
+    ## Check
+    paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+    
   })
+  
+  ## Answer Box
+  output$eval_answer <- renderUI({
+    
+    
+    ## Get My answer
+    emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+    ## The Solution
+    reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
+      str_remove('\\.') %>% 
+      str_subset( ".+")
+    
+    
+    ## User wants to see answer
+    if(input$answer == 'Answer'){
+      HTML(paste(reals_solution,collapse = '')) 
+    } else if(input$answer == 'Location') {
+      HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
+    } else if(input$answer == 'Nothing'){
+      HTML('')
+    }
+    
+  })
+ 
 }
 
 # Run the application 

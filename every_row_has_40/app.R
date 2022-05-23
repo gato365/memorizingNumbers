@@ -45,9 +45,9 @@ ui <- fluidPage(
     mainPanel(
       ## Checking 1 set
       textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
-      # verbatimTextOutput("evaluation"),
-      # radioButtons('answer','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
-      # htmlOutput("eval_answer")
+      verbatimTextOutput("evaluation"),
+      radioButtons('answer','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
+      htmlOutput("eval_answer")
       
     )
   )
@@ -59,80 +59,73 @@ server <- function(input, output) {
   ##----------------------------
   ##
   ##
-  ## Evaluating Just 1 Row of 40
+  ## Evaluating Just 1 Row of 28 Year: 2022
   ##
   ##
   ##----------------------------
   output$evaluation <- renderPrint({ 
     
-    info = input$which_set
-    number_row = as.numeric(str_remove(info,'set-'))
+    ## Get Selected Row
+    number_row = as.numeric(str_remove(input$which_set,'set-'))
+    
+    ## Get My answer
+    emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
+
+
+    ## Get Solution Row
+    tmp_df = df %>%
+      slice(number_row)
+    
+    ## Format Solution Row
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
+      str_remove('\\.') %>%
+      str_subset( ".+")
+
+    
+    ## Check
+    numbers_tested = length(reals_solution)
+    paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+  })
+  
+  
+  
+  
+  ## Answer Box
+  output$eval_answer <- renderUI({
+    
+    
+
+    ## Get Selected Row
+    number_row = as.numeric(str_remove(input$which_set,'set-'))
     
     ## Get My answer
     emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
     
     
     
-    tmp_df = df %>% 
-      slice(number_row)
-    
-    ## The Solution
-    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
-      str_remove('\\.') %>% 
-      str_subset( ".+")
-    
-    numbers_tested = length(reals_solution)
-    ## Check
-    paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
-  })
-  
-  ## Answer Box
-  output$eval_answer <- renderUI({
-    
-    
-    # ## Get My answer
-    # emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
-    # ## The Solution
-    # reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
-    #   str_remove('\\.') %>% 
-    #   str_subset( ".+")
-    # 
-    # 
-    # ## User wants to see answer
-    # if(input$answer == 'Answer'){
-    #   HTML(paste(reals_solution,collapse = '')) 
-    # } else if(input$answer == 'Location') {
-    #   HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
-    # } else if(input$answer == 'Nothing'){
-    #   HTML('')
-    # }
-    
-    
-    # info = input$which_set
-    # number_row = as.numeric(str_remove(info,'set-'))
-    # tmp_df = df %>% 
-    #   # filter(labeled == input$set_combination)
+    # ## Get Solution Row
+    # tmp_df = df %>%
     #   slice(number_row)
     # 
-    # ## Get My answer
-    # emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
     # 
     # 
-    # ## The Solution
-    # reals_solution = str_extract_all(pull(tmp_df[info,1],Merged), boundary("character"))[[1]] %>% 
-    #   str_remove('\\.') %>% 
+    # 
+    # ## Format Solution Row
+    # reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
+    #   str_remove('\\.') %>%
     #   str_subset( ".+")
+    # 
     # 
     # ## User wants to see answer
     # if(input$answer1 == 'Answer'){
-    #   HTML(paste(reals_solution,collapse = '')) 
+    #   HTML(paste(reals_solution,collapse = ''))
     # } else if(input$answer1 == 'Location') {
     #   HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
     # } else if(input$answer1 == 'Nothing'){
     #   HTML('')
     # }
     
-    cat('s')
+    
     
   })
   

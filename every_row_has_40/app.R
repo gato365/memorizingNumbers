@@ -103,27 +103,29 @@ server <- function(input, output) {
     
     
     
-    # ## Get Solution Row
-    # tmp_df = df %>%
-    #   slice(number_row)
-    # 
-    # 
-    # 
-    # 
-    # ## Format Solution Row
-    # reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
-    #   str_remove('\\.') %>%
-    #   str_subset( ".+")
-    # 
-    # 
-    # ## User wants to see answer
-    # if(input$answer1 == 'Answer'){
-    #   HTML(paste(reals_solution,collapse = ''))
-    # } else if(input$answer1 == 'Location') {
-    #   HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
-    # } else if(input$answer1 == 'Nothing'){
-    #   HTML('')
-    # }
+    ## Get Solution Row
+    tmp_df = df %>%
+      slice(number_row)
+
+
+
+
+    ## Format Solution Row
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
+      str_remove('\\.') %>%
+      str_subset( ".+")
+
+
+    
+    
+    ## User wants to see answer
+    if(input$answer == 'Answer'){
+      HTML(paste(reals_solution,collapse = ''))
+    } else if(input$answer == 'Location') {
+      HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
+    } else if(input$answer == 'Nothing'){
+      HTML('')
+    }
     
     
     

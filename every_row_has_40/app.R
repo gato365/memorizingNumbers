@@ -90,7 +90,10 @@ server <- function(input, output) {
     if(emans_len == 0){
       'Waiting'
     } else {
-      paste0(round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' %')
+      paste0('Your Current % correct: ', 
+             round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' % \n',
+             'You have ',correct_len - emans_len ,' more numbers to enter'
+             )
     }
     
     

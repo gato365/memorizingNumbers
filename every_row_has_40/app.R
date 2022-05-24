@@ -70,8 +70,8 @@ server <- function(input, output) {
     
     ## Get My answer
     emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
-
-
+    
+    
     ## Get Solution Row
     tmp_df = df %>%
       slice(number_row)
@@ -80,11 +80,21 @@ server <- function(input, output) {
     reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
       str_remove('\\.') %>%
       str_subset( ".+")
-
+    
     
     ## Check
-    numbers_tested = length(reals_solution)
-    paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+    emans_len = length(emans_solution)
+    correct_len = length(reals_solution)
+    
+    
+    if(emans_len == 0){
+      'Waiting'
+    } else {
+      paste0(round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' %')
+    }
+    
+    
+    # 
   })
   
   
@@ -94,7 +104,7 @@ server <- function(input, output) {
   output$eval_answer <- renderUI({
     
     
-
+    
     ## Get Selected Row
     number_row = as.numeric(str_remove(input$which_set,'set-'))
     
@@ -106,16 +116,16 @@ server <- function(input, output) {
     ## Get Solution Row
     tmp_df = df %>%
       slice(number_row)
-
-
-
-
+    
+    
+    
+    
     ## Format Solution Row
     reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
       str_remove('\\.') %>%
       str_subset( ".+")
-
-
+    
+    
     
     
     ## User wants to see answer

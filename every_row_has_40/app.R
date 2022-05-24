@@ -45,7 +45,7 @@ ui <- fluidPage(
     mainPanel(
       ## Checking 1 set
       textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
-      verbatimTextOutput("evaluation"),
+      htmlOutput("evaluation"),
       radioButtons('answer','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
       htmlOutput("eval_answer")
       
@@ -63,7 +63,7 @@ server <- function(input, output) {
   ##
   ##
   ##----------------------------
-  output$evaluation <- renderPrint({ 
+  output$evaluation <- renderUI({
     
     ## Get Selected Row
     number_row = as.numeric(str_remove(input$which_set,'set-'))
@@ -88,12 +88,17 @@ server <- function(input, output) {
     
     
     if(emans_len == 0){
-      'Waiting'
+      waiting = paste0('Waiting, you have ',correct_len,' numbers to input.')
+      
+      
+      HTML(waiting)
     } else {
-      paste0('Your Current % correct: ', 
-             round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' % \n',
+      grading = paste0('Your Current % correct: ', 
+             round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' %',tags$br(),
              'You have ',correct_len - emans_len ,' more numbers to enter'
              )
+      
+      HTML(grading)
     }
     
     

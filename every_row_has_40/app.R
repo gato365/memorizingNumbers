@@ -143,7 +143,7 @@ server <- function(input, output) {
       HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
     } else if(input$answer == 'Nothing'){
       HTML('')
-    } else if(input$anwer == 'Show Hint'){
+    } else if(input$answer == 'Show Hint'){
       HTML(reals_solution[1:5])
       
     }

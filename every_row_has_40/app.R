@@ -46,7 +46,7 @@ ui <- fluidPage(
       ## Checking 1 set
       textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
       htmlOutput("evaluation"),
-      radioButtons('answer','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
+      radioButtons('answer','Show Answer', c('Nothing','Answer','Location','Show Hint'), selected = 'Nothing'),
       htmlOutput("eval_answer")
       
     )
@@ -143,6 +143,9 @@ server <- function(input, output) {
       HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
     } else if(input$answer == 'Nothing'){
       HTML('')
+    } else if(input$anwer == 'Show Hint'){
+      HTML(reals_solution[1:5])
+      
     }
     
     

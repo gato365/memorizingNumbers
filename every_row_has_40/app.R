@@ -77,7 +77,7 @@ server <- function(input, output) {
       slice(number_row)
     
     ## Format Solution Row
-    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
+    reals_solution = str_extract_all(pull(tmp_df[,1],Merged), boundary("character"))[[1]] %>%
       str_remove('\\.') %>%
       str_subset( ".+")
     
@@ -129,7 +129,7 @@ server <- function(input, output) {
     
     
     ## Format Solution Row
-    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>%
+    reals_solution = str_extract_all(pull(tmp_df[,1],Merged), boundary("character"))[[1]] %>%
       str_remove('\\.') %>%
       str_subset( ".+")
     

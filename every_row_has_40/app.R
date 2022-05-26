@@ -1,30 +1,15 @@
 library(shiny)
-
 library(readxl)
-
 library(tidyverse)
-
 library(lubridate)
-
+library(kableExtra)
 
 setwd("~/Important_Files/Life/01_thoughts_self/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
 
-select_set_fun <- function(specified_set) {
-  ## The Solution
-  value_to_test = e_number_df %>% 
-    filter(set == specified_set) %>% 
-    select(-set) %>% 
-    unite('Merged', `col-1`:`col-4`,remove =FALSE,sep = '') %>% 
-    mutate(Merged = str_remove_all(Merged,'\'')) %>% 
-    pull(Merged)
-  return(value_to_test)
-}
-
-
-
-
+df = df %>% 
+  mutate(row_number = 1:n())
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -38,7 +23,7 @@ ui <- fluidPage(
       
       
       selectInput('which_set','Select Set to Test',choices = e_number_df$set),
-      
+      checkboxInput('show_table',label = 'Show the all numbers', value = FALSE)
     ),
     
     # Show a plot of the generated distribution
@@ -47,7 +32,8 @@ ui <- fluidPage(
       textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
       htmlOutput("evaluation"),
       radioButtons('answer','Show Answer', c('Nothing','Answer','Location','Show Hint'), selected = 'Nothing'),
-      htmlOutput("eval_answer")
+      htmlOutput("eval_answer"),
+      tableOutput("numbers_kable")
       
     )
   )
@@ -94,9 +80,9 @@ server <- function(input, output) {
       HTML(waiting)
     } else {
       grading = paste0('Your Current % correct: ', 
-             round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' %',tags$br(),
-             'You have ',correct_len - emans_len ,' more numbers to enter'
-             )
+                       round(sum(emans_solution == reals_solution[1:emans_len])/ correct_len,3) * 100, ' %',tags$br(),
+                       'You have ',correct_len - emans_len ,' more numbers to enter'
+      )
       
       HTML(grading)
     }
@@ -104,6 +90,10 @@ server <- function(input, output) {
     
     # 
   })
+  
+  
+  
+  
   
   
   
@@ -152,6 +142,15 @@ server <- function(input, output) {
     
   })
   
+  output$numbers_kable <- function() {
+    
+    
+    df %>% 
+      select(-labeled) %>% 
+      kable("html") %>%
+      kable_styling("striped", full_width = F) 
+    
+  }
 }
 
 # Run the application 

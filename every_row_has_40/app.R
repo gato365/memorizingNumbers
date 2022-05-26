@@ -144,11 +144,13 @@ server <- function(input, output) {
   
   output$numbers_kable <- function() {
     
-    
-    df %>% 
-      select(-labeled) %>% 
-      kable("html") %>%
-      kable_styling("striped", full_width = F) 
+    if(input$show_table == TRUE){
+      
+      df %>% 
+        select(-labeled) %>% 
+        kable("html") %>%
+        kable_styling("striped", full_width = F) 
+    }
     
   }
 }

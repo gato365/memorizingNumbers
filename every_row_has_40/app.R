@@ -31,7 +31,7 @@ ui <- fluidPage(
       ## Checking 1 set
       textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
       htmlOutput("evaluation"),
-      radioButtons('answer','Show Answer', c('Nothing','Answer','Location','Show Hint'), selected = 'Nothing'),
+      shiny::column(4, radioButtons('answer','Show Answer', c('Nothing','Answer','Location','Show Hint'), selected = 'Nothing')),
       htmlOutput("eval_answer"),
       tableOutput("numbers_kable")
       
@@ -153,6 +153,10 @@ server <- function(input, output) {
     }
     
   }
+  
+  
+  
+
 }
 
 # Run the application 

@@ -8,6 +8,12 @@
 #
 
 library(shiny)
+library(tidyverse)
+library(lubridate)
+
+
+setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
+source('bring_in_e.R')
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -18,28 +24,24 @@ ui <- fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
+      
       
       
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
-      selectInput(inputId = 'selectRow',
-                  label = 'Select Row',
-                  choices = c('1','2','3')),
+      selectInput(inputId = 'selectedGroup',
+                  label = 'Select Grouping:',
+                  choices = c('A','B','C','D','E')),
       
       textAreaInput(inputId = 'input_text',
                     label = 'Place Numbers Here:',
                     value = "Numbers", 
                     width = '400px',
                     height = '200px'),
-      verbatimTextOutput(outputId ='output_text', placeholder = FALSE)
-      
+      verbatimTextOutput(outputId ='output_text', placeholder = FALSE),
+      actionButton(inputId = 'button',label = 'Evaluate')
     )
   )
 )
@@ -48,11 +50,17 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   
+  
+  
   output$output_text<- renderText({ 
+    
+    
+    tmp_df = df %>%
+      filter(labeled == input$selectedGroup)
     
     if(str_detect(input$input_text,'\n')){
       info_given = str_split(input$input_text,'\n')[[1]]
-      info_given[as.numeric(input$selectRow)]
+      info_given[1]
     }
     
   })

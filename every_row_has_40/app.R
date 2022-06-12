@@ -4,7 +4,7 @@ library(tidyverse)
 library(lubridate)
 library(kableExtra)
 
-setwd("~/Important_Files/Life/01_thoughts_self/01_enhancing_self/memorizingNumbers")
+setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
 

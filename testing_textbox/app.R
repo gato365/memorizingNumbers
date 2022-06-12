@@ -22,7 +22,7 @@ source('bring_in_e.R')
 ## Output: string
 ##---------------------------------
 getSolutionLine = function(df,number){
-  realSolution = str_extract_all(pull(df[,number],Merged), boundary("character"))[[1]] %>%
+  realSolution = str_extract_all(pull(df[number,1],Merged), boundary("character"))[[1]] %>%
     str_remove('\\.') %>%
     str_subset( ".+")
   return(realSolution)
@@ -32,24 +32,31 @@ getSolutionLine = function(df,number){
 
 ##----------------------------------------
 ## Name: displayGrade
-## Purpose: Display my grade regarding my solution
-## Input: number, my solution, data frame
+## Purpose: Display user's grade regarding my solution
+## Input: number, user solution, data frame
 ## Output: Statement about correctness
 ##----------------------------------------
 displayGrade = function(number,emansSolutionLine,df){
   
-  realsSolutionLine = getSolutionLine(df,number) 
+  realsSolutionLine = getSolutionLine(df,number)
+  
+  emansSolutionLine = str_extract_all(emansSolutionLine, boundary("character"))[[1]]
   
   ## Check
   emans_len = length(emansSolutionLine)
   reals_len = length(realsSolutionLine)
   
   
+  
   ## Solution
-  grading = paste0('Your Current % correct: ', 
+  grading = paste0('Line ',number,':', tags$br(),
+                   'Your Current % correct: ', 
                    round(sum(emansSolutionLine == realsSolutionLine[1:emans_len])/ reals_len,3) * 100, ' %',tags$br(),
+                   'Your Current % incorrect: ', 
+                   round(1 - (sum(emansSolutionLine == realsSolutionLine[1:emans_len])/ reals_len),3) * 100, ' %',tags$br(),
                    'You have ',reals_len - emans_len ,' more numbers to enter'
   )
+  
   
   return(grading)
   
@@ -78,7 +85,7 @@ ui <- fluidPage(
       
       textAreaInput(inputId = 'input_text',
                     label = 'Place Numbers Here:',
-                    value = "Numbers", 
+                    value = "", 
                     width = '400px',
                     height = '200px'),
       htmlOutput('output_text'),
@@ -96,43 +103,48 @@ server <- function(input, output) {
   
   output$output_text<- renderUI({ 
     
-    
+    ## Select row from user
     tmp_df = df %>%
       filter(labeled == input$selectedGroup)
     
     info_given = str_split(input$input_text,'\n')[[1]]
     
-    if(sum(str_detect(input$input_text,'\n')) == 0){            ## 1st Line
+    
+    
+    
+    if(sum(str_detect(input$input_text,'\n')) >= 0){            ## 1st Line
       emansSolutionLine = info_given[1]
-      grading = displayGrade(1,emansSolutionLine,tmp_df)
-      info = paste0('\n','Line 1: \n', grading)
-    } 
+      grading1 = displayGrade(1,emansSolutionLine,tmp_df)
+      info = grading1
+    }
     
     if(sum(str_detect(input$input_text,'\n')) == 1 ){    ## 2nd Line
       emansSolutionLine = info_given[2]
-      grading = displayGrade(2,emansSolutionLine,tmp_df)
-      info = paste0(info, '\n','Line 2: \n', grading)
-    }  
+      grading2 = displayGrade(2,emansSolutionLine,tmp_df)
+      info = paste0(info, tags$br(), grading2)
+    }
     
     if(sum(str_detect(input$input_text,'\n')) == 2){    ## 3rd Line
       emansSolutionLine = info_given[3]
-      grading = displayGrade(3,emansSolutionLine,tmp_df)
-      info = paste0(info, '\n','Line 3: \n', grading)
-    } 
+      grading3 = displayGrade(3,emansSolutionLine,tmp_df)
+      info = paste0(info, '\n','Line 3: \n', grading3)
+    }
     
     if(sum(str_detect(input$input_text,'\n')) == 3){     ## 4th Line
       emansSolutionLine = info_given[4]
-      grading = displayGrade(4,emansSolutionLine,tmp_df)
+      grading4 = displayGrade(4,emansSolutionLine,tmp_df)
       
-      info = paste0(info, '\n','Line 4: \n', grading)
-    } 
+      info = paste0(info, '\n','Line 4: \n', grading4)
+    }
     
     if(sum(str_detect(input$input_text,'\n')) == 4){     ## 5th Line
       emansSolutionLine = info_given[5]
-      grading = displayGrade(5,emansSolutionLine,tmp_df)
-      info = paste0(info, '\n','Line 5: \n', grading)
+      grading5 = displayGrade(5,emansSolutionLine,tmp_df)
+      info = paste0(info, '\n','Line 5: \n', grading5)
     }
     
+    
+    ## Display Grade
     HTML(info)
     
   })

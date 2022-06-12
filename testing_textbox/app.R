@@ -46,14 +46,21 @@ displayGrade = function(number,emansSolutionLine,df){
   emans_len = length(emansSolutionLine)
   reals_len = length(realsSolutionLine)
   
+  if( sum(emansSolutionLine != realsSolutionLine[1:emans_len]) > 0 ){
+    percentWrong = paste0('<font color=\"#FF0000\"><b>Your Current % incorrect: ', 
+                          round((sum(emansSolutionLine != realsSolutionLine[1:emans_len])/ length(1:emans_len)),3) * 100, ' %',tags$br(),
+                          '</b></font>')
+  } else {
+    
+    percentWrong = ''
+  }
   
   
   ## Solution
   grading = paste0('Line ',number,':', tags$br(),
                    'Your Current % correct: ', 
                    round(sum(emansSolutionLine == realsSolutionLine[1:emans_len])/ reals_len,3) * 100, ' %',tags$br(),
-                   'Your Current % incorrect: ', 
-                   round(1 - (sum(emansSolutionLine == realsSolutionLine[1:emans_len])/ reals_len),3) * 100, ' %',tags$br(),
+                   percentWrong,
                    'You have ',reals_len - emans_len ,' more numbers to enter'
   )
   

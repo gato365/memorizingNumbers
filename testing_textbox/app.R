@@ -10,9 +10,10 @@
 library(shiny)
 library(tidyverse)
 library(lubridate)
+library(kableExtra)
 
 
-setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
+# setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
 ##---------------------------------
@@ -76,30 +77,25 @@ ui <- fluidPage(
   # Application title
   titlePanel("Numbers Shown"),
   
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(
-    sidebarPanel(
-      
-      
-      
-    ),
+  # Show a plot of the generated distribution
+  mainPanel(
+    checkboxInput('show_table',label = 'Show current rows numbers', value = FALSE),
+    selectInput(inputId = 'selectedGroup',
+                label = 'Select Grouping:',
+                choices = c('A','B','C','D','E')),
     
-    # Show a plot of the generated distribution
-    mainPanel(
-      selectInput(inputId = 'selectedGroup',
-                  label = 'Select Grouping:',
-                  choices = c('A','B','C','D','E')),
-      
-      textAreaInput(inputId = 'input_text',
-                    label = 'Place Numbers Here:',
-                    value = "", 
-                    width = '400px',
-                    height = '200px'),
-      htmlOutput('output_text'),
-      # verbatimTextOutput(outputId ='output_text', placeholder = FALSE),
-      actionButton(inputId = 'button',label = 'Evaluate')
-    )
+    textAreaInput(inputId = 'input_text',
+                  label = 'Place Numbers Here:',
+                  value = "", 
+                  width = '400px',
+                  height = '200px'),
+    htmlOutput('output_text'),
+    tableOutput("numbers_kable")
+    # actionButton(inputId = 'button',label = 'Evaluate')
   )
+  
+  
+ 
 )
 
 # Define server logic required to draw a histogram
@@ -158,6 +154,20 @@ server <- function(input, output) {
   output$text <- renderText({ input$txt })
   
   
+  
+  output$numbers_kable <- function() {
+    
+    if(input$show_table == TRUE){
+      
+      df %>%
+        filter(labeled == input$selectedGroup) %>% 
+        filter(row_number() == sum(str_count(input$input_text,'\n'))+1 ) %>% 
+        select(-labeled) %>% 
+        kable("html") %>%
+        kable_styling("striped", full_width = F) 
+    }
+    
+  }
   
   
 }

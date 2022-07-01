@@ -70,6 +70,19 @@ displayGrade = function(number,emansSolutionLine,df){
   
 }
 
+##----------------------------------------
+## Name: determineNumberLine
+## Purpose: Show the current line
+## Input: number of breaks, user solution, data frame
+## Output: Statement about correctness based on line
+##----------------------------------------
+determineNumberLine = function(number_breaks,info_given,tmp_df){
+  emansSolutionLine = info_given[number_breaks+1]
+  grading = displayGrade(number_breaks+1,emansSolutionLine,tmp_df)
+  return(grading)
+}
+
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -113,37 +126,13 @@ server <- function(input, output) {
     info_given = str_split(input$input_text,'\n')[[1]]
     
     
-    info = ''
     
-    if(sum(str_count(input$input_text,'\n')) == 0){            ## 1st Line
-      emansSolutionLine = info_given[1]
-      grading1 = displayGrade(1,emansSolutionLine,tmp_df)
-      info = grading1
-    }
+    number_breaks = sum(str_count(input$input_text,'\n'))
+    info = determineNumberLine(number_breaks,info_given,tmp_df)
     
-    if(sum(str_count(input$input_text,'\n')) == 1 ){    ## 2nd Line
-      emansSolutionLine = info_given[2]
-      grading2 = displayGrade(2,emansSolutionLine,tmp_df)
-      info = paste0(info, tags$br(), grading2)
-    } 
     
-    if(sum(str_count(input$input_text,'\n')) == 2){    ## 3rd Line
-      emansSolutionLine = info_given[3]
-      grading3 = displayGrade(3,emansSolutionLine,tmp_df)
-      info = paste0(info,tags$br(), grading3)
-    }
     
-    if(sum(str_count(input$input_text,'\n')) == 3){     ## 4th Line
-      emansSolutionLine = info_given[4]
-      grading4 = displayGrade(4,emansSolutionLine,tmp_df)
-      info = paste0(info, tags$br(), grading4)
-    }
     
-    if(sum(str_count(input$input_text,'\n')) == 4){     ## 5th Line
-      emansSolutionLine = info_given[5]
-      grading5 = displayGrade(5,emansSolutionLine,tmp_df)
-      info = paste0(info, tags$br(), grading5)
-    }
     
   
     ## Display Grade

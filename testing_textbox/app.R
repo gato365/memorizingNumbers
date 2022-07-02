@@ -93,9 +93,24 @@ ui <- fluidPage(
   # Show a plot of the generated distribution
   mainPanel(
     checkboxInput('show_table',label = 'Show current rows numbers', value = FALSE),
-    selectInput(inputId = 'selectedGroup',
+    
+    selectInput(inputId = 'type_of_test',
+                label = 'What type of test is being administered?',
+                choices = c('Weekday','Weekend')),
+    
+    conditionalPanel(
+      condition = "input.type_of_test == 'Weekday'",
+       selectInput(inputId = 'selectedGroup',
                 label = 'Select Grouping:',
-                choices = c('A','B','C','D','E')),
+                choices = c('A','B','C','D','E'))
+      
+      
+    ),
+    
+    
+    
+    
+   
     
     textAreaInput(inputId = 'input_text',
                   label = 'Place Numbers Here:',
@@ -120,8 +135,13 @@ server <- function(input, output) {
   output$output_text<- renderUI({ 
     
     ## Select row from user
+    
+    if(input$type_of_test == 'Weekday'){
     tmp_df = df %>%
       filter(labeled == input$selectedGroup)
+    } else {
+      tmp_df = df
+    }
     
     info_given = str_split(input$input_text,'\n')[[1]]
     

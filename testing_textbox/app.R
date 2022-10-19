@@ -100,9 +100,9 @@ ui <- fluidPage(
     
     conditionalPanel(
       condition = "input.type_of_test == 'Weekday'",
-       selectInput(inputId = 'selectedGroup',
-                label = 'Select Grouping:',
-                choices = c('A','B','C','D','E'))
+      selectInput(inputId = 'selectedGroup',
+                  label = 'Select Grouping:',
+                  choices = c('A','B','C','D','E'))
       
       
     ),
@@ -110,21 +110,25 @@ ui <- fluidPage(
     
     
     
-   
     
-    textAreaInput(inputId = 'input_text',
-                  label = 'Place Numbers Here:',
-                  value = "", 
-                  width = '400px',
-                  height = '200px'),
-    htmlOutput('output_text'),
-    tableOutput("numbers_kable")
-    # actionButton(inputId = 'button',label = 'Evaluate')
-  )
+    
+  ),
   
   
- 
+  tags$style("#input_text {font-size:14px;}"),
+  textAreaInput(inputId = 'input_text',
+                label = 'Place Numbers Here:',
+                value = "", 
+                width = '450px',
+                height = '200px',
+                resize = 'horizontal'),
+  htmlOutput('output_text'),
+  tableOutput("numbers_kable")
+  # actionButton(inputId = 'button',label = 'Evaluate')
 )
+
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -137,8 +141,8 @@ server <- function(input, output) {
     ## Select row from user
     
     if(input$type_of_test == 'Weekday'){
-    tmp_df = df %>%
-      filter(labeled == input$selectedGroup)
+      tmp_df = df %>%
+        filter(labeled == input$selectedGroup)
     } else {
       tmp_df = df
     }
@@ -154,7 +158,7 @@ server <- function(input, output) {
     
     
     
-  
+    
     ## Display Grade
     HTML(info)
     

@@ -133,13 +133,15 @@ ui <- fluidPage(
   ),
   
   
-  tags$style("#input_text {font-size:12px;input = 'number';}"),
+  tags$style("#input_text {font-size:13px;}"),
   textAreaInput(inputId = 'input_text',
                 label = 'Place Numbers Here:',
                 value = "", 
                 width = '450px',
                 height = '200px',
                 resize = 'horizontal'),
+  numericInput("info",label = "Enter Numeric Info", value = "", 
+               width = '450px'),
   htmlOutput('output_text'),
   tableOutput("numbers_kable")
   # actionButton(inputId = 'button',label = 'Evaluate')

@@ -16,6 +16,24 @@ library(kableExtra)
 # setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
+# mod_df = df %>% 
+#   mutate(
+#     ordered = paste0('\'',c(rep(1:5,5),1,2,3),'\''),
+#     Merged = paste0('\'',as.character(Merged),'\''),
+#     labeled =  paste0('\'',as.character(labeled),'\''),
+#     new_var = paste0(
+#       '{ \n trueString: ',Merged,',\n',
+#       'labeled: ',labeled,',\n',
+#       'ordered: ',ordered,',\n',
+#       '},'
+#       
+#       
+#     ))
+# 
+# objText = mod_df$new_var
+# write(objText,'e_as_object.txt')
+
+
 ##---------------------------------
 ## Name: getSolutionLine
 ## Purpose: get row number based on selected row
@@ -115,7 +133,7 @@ ui <- fluidPage(
   ),
   
   
-  tags$style("#input_text {font-size:14px;}"),
+  tags$style("#input_text {font-size:12px;input = 'number';}"),
   textAreaInput(inputId = 'input_text',
                 label = 'Place Numbers Here:',
                 value = "", 

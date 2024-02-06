@@ -102,14 +102,81 @@ determineNumberLine = function(number_breaks,info_given,tmp_df){
 
 
 
-# Define UI for application that draws a histogram
+# # Define UI for application that draws a histogram
+# ui <- fluidPage(
+#   
+#   # Application title
+#   titlePanel("Numbers Shown"),
+#   
+#   # Show a plot of the generated distribution
+#   mainPanel(
+#     checkboxInput('show_table',label = 'Show current rows numbers', value = FALSE),
+#     
+#     selectInput(inputId = 'type_of_test',
+#                 label = 'What type of test is being administered?',
+#                 choices = c('Weekday','Weekend')),
+#     
+#     conditionalPanel(
+#       condition = "input.type_of_test == 'Weekday'",
+#       selectInput(inputId = 'selectedGroup',
+#                   label = 'Select Grouping:',
+#                   choices = c('A','B','C','D','E')),
+#       actionButton("start", "Start Timer"),
+#       actionButton("stop", "Stop Timer"),
+#       actionButton("hide", "Hide/Show Timer"),
+#       textOutput("timer")
+#       
+#     ),
+#     
+#     
+#     
+#     
+#     
+#     
+#   ),
+#   
+#   
+#   tags$style("#input_text {font-size:13px;}"),
+#   textAreaInput(inputId = 'input_text',
+#                 label = 'Place Numbers Here:',
+#                 value = "", 
+#                 width = '450px',
+#                 height = '200px',
+#                 resize = 'horizontal'),
+#   htmlOutput('output_text'),
+#   tableOutput("numbers_kable")
+#   # actionButton(inputId = 'button',label = 'Evaluate')
+# )
+
+
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Numbers Shown"),
+  titlePanel("Numbers Shown", windowTitle = "Numbers Shown"),
   
   # Show a plot of the generated distribution
   mainPanel(
+    tags$style(HTML("
+      .skin-blue .main-header .logo { background-color: #3c8dbc; }
+      .skin-blue .main-header .navbar { background-color: #3c8dbc; }
+      .skin-blue .main-header .navbar .sidebar-toggle:hover { background-color: #367fa9; }
+      .skin-blue .main-header .navbar .nav > li > a { color: #ffffff; }
+      .skin-blue .main-header .navbar .nav > li > a:hover { background: #367fa9; }
+      .skin-blue .main-header .navbar .nav > li > a:focus { background: #367fa9; }
+      .skin-blue .main-header .logo:hover { background-color: #367fa9; }
+      .skin-blue .main-sidebar { background-color: #222d32; }
+      .skin-blue .sidebar a { color: #b8c7ce; }
+      .skin-blue .sidebar .sidebar-menu > li.header { color: #4b646f; background: #1a2226; }
+      .skin-blue .sidebar .sidebar-menu > li > a:hover { color: #ffffff; background: #1e282c; }
+      .skin-blue .sidebar .sidebar-menu > li > a:focus { color: #ffffff; background: #1e282c; }
+      .skin-blue .sidebar .sidebar-menu > li.active > a { color: #ffffff; background: #1e282c; }
+      .skin-blue .sidebar .sidebar-menu > li.active > a:hover { color: #ffffff; background: #1e282c; }
+      .skin-blue .sidebar .sidebar-menu > li.active > a:focus { color: #ffffff; background: #1e282c; }
+      .skin-blue .content-wrapper, .skin-blue .main-footer { background-color: #ffffff; }
+      .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #222d32; }
+      .skin-blue .content-wrapper, .skin-blue .main-footer, .skin-blue .main-footer .container { background-color: #ffffff; }
+    ")),
+    
     checkboxInput('show_table',label = 'Show current rows numbers', value = FALSE),
     
     selectInput(inputId = 'type_of_test',
@@ -120,40 +187,66 @@ ui <- fluidPage(
       condition = "input.type_of_test == 'Weekday'",
       selectInput(inputId = 'selectedGroup',
                   label = 'Select Grouping:',
-                  choices = c('A','B','C','D','E'))
-      
+                  choices = c('A','B','C','D','E')),
+      actionButton("start", "Start Timer", class = "btn btn-success"),
+      actionButton("stop", "Stop Timer", class = "btn btn-danger"),
+      actionButton("hide", "Hide/Show Timer", class = "btn btn-info"),
+      textOutput("timer")
       
     ),
     
-    
-    
-    
-    
-    
-  ),
-  
-  
-  tags$style("#input_text {font-size:13px;}"),
-  textAreaInput(inputId = 'input_text',
-                label = 'Place Numbers Here:',
-                value = "", 
-                width = '450px',
-                height = '200px',
-                resize = 'horizontal'),
-  numericInput("info",label = "Enter Numeric Info", value = "", 
-               width = '450px'),
-  htmlOutput('output_text'),
-  tableOutput("numbers_kable")
-  # actionButton(inputId = 'button',label = 'Evaluate')
+    tags$style("#input_text {font-size:13px;}"),
+    textAreaInput(inputId = 'input_text',
+                  label = 'Place Numbers Here:',
+                  value = "", 
+                  width = '450px',
+                  height = '200px',
+                  resize = 'horizontal'),
+    htmlOutput('output_text'),
+    tableOutput("numbers_kable")
+  )
 )
 
 
-
-
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
+  
+  ##----------------------------
+  ## TIme element:
+  values <- reactiveValues(timer = 0, showTimer = TRUE, running = FALSE)
+  
+  observeEvent(input$start, {
+    values$timer <- 0
+    values$showTimer <- TRUE
+    values$running <- TRUE
+  })
+  
+  observeEvent(input$stop, {
+    values$running <- FALSE
+  })
+  
+  observeEvent(input$hide, {
+    values$showTimer <- !values$showTimer
+  })
+  
+  observe({
+    if (values$running) {
+      values$timer <- isolate(values$timer) + 1
+      invalidateLater(1000, session)
+    }
+  })
+  
+  output$timer <- renderText({
+    if (values$showTimer) {
+      paste("Timer:", values$timer)
+    } else {
+      ""
+    }
+  })
   
   
+  
+  ##----------------------------
   
   
   output$output_text<- renderUI({ 

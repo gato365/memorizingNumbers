@@ -5,9 +5,7 @@ account: gato365
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6504732
-bundleId: 6685951
+bundleId: 9553078
 url: https://gato365.shinyapps.io/eIsTestingMemory/
-when: 1672489689.39085
-lastSyncTime: 1672489689.39086
 asMultiple: FALSE
 asStatic: FALSE

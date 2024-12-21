@@ -17,8 +17,8 @@ df = bind_cols(odd_e_number_df,even_e_number_df) %>%
   select(-contains('set'),-number) %>% 
   unite('Merged', `col-1...2`:`col-4...10`,remove =TRUE, sep = ' - ') %>% 
   mutate(Merged = str_remove_all(Merged,'\'')) %>% 
-  mutate(labeled = c(rep('A',5),rep('B',5),rep('C',5),rep('D',5),rep('E',5),rep('F',3) ),
-         set = c(rep(paste0("set ",1:5),5),paste0("set ",1:3) ))
+  mutate(labeled = c(rep('A',5),rep('B',5),rep('C',5),rep('D',5),rep('E',5),rep('F',5) ),
+         set = c(rep(paste0("set ",1:5),5),paste0("set ",1:5) ))
 
 
 

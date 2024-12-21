@@ -11,27 +11,26 @@ library(shiny)
 library(tidyverse)
 library(lubridate)
 library(kableExtra)
+library(htmltools)
 
 
 # setwd("~/Important_Files/Life/01_thoughts_beliefs/01_enhancing_self/memorizingNumbers")
 source('bring_in_e.R')
 
-# mod_df = df %>% 
-#   mutate(
-#     ordered = paste0('\'',c(rep(1:5,5),1,2,3),'\''),
-#     Merged = paste0('\'',as.character(Merged),'\''),
-#     labeled =  paste0('\'',as.character(labeled),'\''),
-#     new_var = paste0(
-#       '{ \n trueString: ',Merged,',\n',
-#       'labeled: ',labeled,',\n',
-#       'ordered: ',ordered,',\n',
-#       '},'
-#       
-#       
-#     ))
-# 
-# objText = mod_df$new_var
-# write(objText,'e_as_object.txt')
+
+
+##---------------------------------
+## Helper function to add hyphens after every 5 characters
+##---------------------------------
+# add_hyphens <- function(input_string) {
+#   sapply(input_string, function(x) {
+#     # Remove any existing hyphens first to avoid duplicating
+#     x <- gsub("-", "", x)
+#     # Insert hyphen after every 5 characters
+#     gsub("(.{5})", "\\1-", x)
+#   })
+# }
+
 
 
 ##---------------------------------
@@ -56,37 +55,51 @@ getSolutionLine = function(df,number){
 ## Output: Statement about correctness
 ##----------------------------------------
 displayGrade = function(number,emansSolutionLine,df){
-  
+
   realsSolutionLine = getSolutionLine(df,number)
-  
+
   emansSolutionLine = str_extract_all(emansSolutionLine, boundary("character"))[[1]]
-  
+
   ## Check
   emans_len = length(emansSolutionLine)
   reals_len = length(realsSolutionLine)
-  
+
   if( sum(emansSolutionLine != realsSolutionLine[1:emans_len]) > 0 ){
-    percentWrong = paste0('<font color=\"#FF0000\"><b>Your Current % incorrect: ', 
+    percentWrong = paste0('<font color=\"#FF0000\"><b>Your Current % incorrect: ',
                           round((sum(emansSolutionLine != realsSolutionLine[1:emans_len])/ length(1:emans_len)),3) * 100, ' %',tags$br(),
                           '</b></font>')
   } else {
-    
+
     percentWrong = ''
   }
-  
-  
+
+
   ## Solution
   grading = paste0('Line ',number,':', tags$br(),
-                   'Your Current % correct: ', 
+                   'Your Current % correct: ',
                    round(sum(emansSolutionLine == realsSolutionLine[1:emans_len])/ reals_len,3) * 100, ' %',tags$br(),
                    percentWrong,
                    'You have ',reals_len - emans_len ,' more numbers to enter'
   )
-  
-  
+
+
   return(grading)
-  
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##----------------------------------------
 ## Name: determineNumberLine
@@ -102,51 +115,6 @@ determineNumberLine = function(number_breaks,info_given,tmp_df){
 
 
 
-# # Define UI for application that draws a histogram
-# ui <- fluidPage(
-#   
-#   # Application title
-#   titlePanel("Numbers Shown"),
-#   
-#   # Show a plot of the generated distribution
-#   mainPanel(
-#     checkboxInput('show_table',label = 'Show current rows numbers', value = FALSE),
-#     
-#     selectInput(inputId = 'type_of_test',
-#                 label = 'What type of test is being administered?',
-#                 choices = c('Weekday','Weekend')),
-#     
-#     conditionalPanel(
-#       condition = "input.type_of_test == 'Weekday'",
-#       selectInput(inputId = 'selectedGroup',
-#                   label = 'Select Grouping:',
-#                   choices = c('A','B','C','D','E')),
-#       actionButton("start", "Start Timer"),
-#       actionButton("stop", "Stop Timer"),
-#       actionButton("hide", "Hide/Show Timer"),
-#       textOutput("timer")
-#       
-#     ),
-#     
-#     
-#     
-#     
-#     
-#     
-#   ),
-#   
-#   
-#   tags$style("#input_text {font-size:13px;}"),
-#   textAreaInput(inputId = 'input_text',
-#                 label = 'Place Numbers Here:',
-#                 value = "", 
-#                 width = '450px',
-#                 height = '200px',
-#                 resize = 'horizontal'),
-#   htmlOutput('output_text'),
-#   tableOutput("numbers_kable")
-#   # actionButton(inputId = 'button',label = 'Evaluate')
-# )
 
 
 ui <- fluidPage(
@@ -187,7 +155,7 @@ ui <- fluidPage(
       condition = "input.type_of_test == 'Weekday'",
       selectInput(inputId = 'selectedGroup',
                   label = 'Select Grouping:',
-                  choices = c('A','B','C','D','E')),
+                  choices = c('A','B','C','D','E','F')),
       actionButton("start", "Start Timer", class = "btn btn-success"),
       actionButton("stop", "Stop Timer", class = "btn btn-danger"),
       actionButton("hide", "Hide/Show Timer", class = "btn btn-info"),
@@ -196,12 +164,17 @@ ui <- fluidPage(
     ),
     
     tags$style("#input_text {font-size:13px;}"),
-    textAreaInput(inputId = 'input_text',
-                  label = 'Place Numbers Here:',
-                  value = "", 
-                  width = '450px',
-                  height = '200px',
-                  resize = 'horizontal'),
+    
+    
+   
+    # 
+    tags$textarea(id='input_text', 
+                  class='form-control', 
+                   
+                  style='width: 450px; height: 200px; resize: horizontal;', 
+                  type='tel'),
+
+    
     htmlOutput('output_text'),
     tableOutput("numbers_kable")
   )
@@ -210,6 +183,8 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
+  
+
   
   ##----------------------------
   ## TIme element:
